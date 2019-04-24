@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const dbName = "matts-api"
+const dbName = "e-commerce"
 const dbUser = "admin"
 const dbPassword = "abc123"
 const dbServer = "127.0.0.1"

@@ -2,7 +2,7 @@
 
 var mongoose = require('mongoose');
 
-var dbName = "matts-api";
+var dbName = "e-commerce";
 var dbUser = "admin";
 var dbPassword = "abc123";
 var dbServer = "127.0.0.1";

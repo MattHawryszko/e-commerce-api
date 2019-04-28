@@ -8,6 +8,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var express = require('express');
 require('./db/mongoose');
+
 var cors = require('cors');
 var userRouter = require('./routers/user');
 

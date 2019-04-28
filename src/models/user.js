@@ -5,7 +5,17 @@ const jwt = require('jsonwebtoken')
 
 
 const userSchema = new mongoose.Schema({
-    name: {
+    username: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    firstname: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    lastname: {
         type: String,
         required: true,
         trim: true
@@ -33,21 +43,52 @@ const userSchema = new mongoose.Schema({
             }
         }
     },
-
-    age: {
-        type: Number,
-        default: 0,
-        validate(value) {
-            if (value < 0) {
-                throw new Error('Age must be a postive number')
-            }
-        }
+    country: {
+        type: String,
+        required: true,
+        trim: true
     },
-    admin: {
-        type: Boolean,
+    street: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    appartment: {
+        type: String,
+        required: false,
+        trim: true
+    },
+    city: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    province: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    postalcode: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    phone: {
+        type: String,
+        required: false,
+        trim: true
+    },
+    level: {
+        type: Number,
         default: false,
         required: true
     },
+    ip:[{
+        current:{
+            type: String,
+            required: true
+        }
+    }],
     tokens:[{
         token:{
             type: String,
@@ -75,9 +116,16 @@ userSchema.methods.generateJWT = async function() {
     await user.save()
     return token
 }
+userSchema.methods.setIp = async function(req) {
+    const user = this
+    let ip = req.header('x-forwarded-for') || req.connection.remoteAddress;
+    ip = ip.split(':').slice(-1);
+    user.ip = user.ip.concat({ current: ip})
+    await user.save()
+    return user
+}
 userSchema.pre('save', async function(next){
     const user = this
-
     if(user.isModified('password')){
         user.password = await bcrypt.hash(user.password, 8)
     }

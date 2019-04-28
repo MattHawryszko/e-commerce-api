@@ -3,20 +3,22 @@ const User = require('../models/user')
 const Auth = require('../middleware/auth')
 const router = new express.Router()
 
-router.post('/api/users', async (req, res) => {
+router.post('/users', async (req, res) => {
     const user = new User(req.body)
     
     try {
         const token = await user.generateJWT()
+        await user.setIp(req)
         await user.save()
         res.status(201).send({user, token})
+        
     } catch (e) {
         console.log(e)
         res.status(400).send(e)
     }
 })
 
-router.post('/api/users/login', async (req, res) => {
+router.post('/users/login', async (req, res) => {
     
 
     try {
@@ -28,7 +30,7 @@ router.post('/api/users/login', async (req, res) => {
         res.status(400).send()
     }
 })
-router.post('/api/users/logout',Auth , async (req, res) => {
+router.post('/users/logout',Auth , async (req, res) => {
     try {  
         req.user.tokens = req.user.tokens.filter((token) =>{
             return token.token !== req.token
@@ -39,7 +41,7 @@ router.post('/api/users/logout',Auth , async (req, res) => {
         res.status(500).send()
     }
 })
-router.post('/api/users/logoutAll',Auth , async (req, res) => {
+router.post('/users/logoutAll',Auth , async (req, res) => {
     try {  
         req.user.tokens = []
         await req.user.save()
@@ -49,7 +51,7 @@ router.post('/api/users/logoutAll',Auth , async (req, res) => {
     }
 })
 
-router.get('/api/users', Auth, async (req, res) => {
+router.get('/users', Auth, async (req, res) => {
     try {
         const users = await User.find({})
         res.send(users)
@@ -57,7 +59,7 @@ router.get('/api/users', Auth, async (req, res) => {
         res.status(500).send()
     }
 })
-router.get('/api/users/me', Auth, async (req, res) => {
+router.get('/users/me', Auth, async (req, res) => {
     try {
         res.send(req.user)
     } catch (e) {
@@ -65,7 +67,7 @@ router.get('/api/users/me', Auth, async (req, res) => {
     }
 })
 
-router.get('/api/users/:id',Auth , async (req, res) => {
+router.get('/users/:id',Auth , async (req, res) => {
     const _id = req.params.id
 
     try {
@@ -81,7 +83,7 @@ router.get('/api/users/:id',Auth , async (req, res) => {
     }
 })
 
-router.patch('/api/users/:id',Auth , async (req, res) => {
+router.patch('/users/:id',Auth , async (req, res) => {
     const updates = Object.keys(req.body)
     const allowedUpdates = ['name', 'email', 'password', 'age']
     const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
@@ -106,7 +108,7 @@ router.patch('/api/users/:id',Auth , async (req, res) => {
     }
 })
 
-router.delete('/api/users/:id', Auth,async (req, res) => {
+router.delete('/users/:id', Auth,async (req, res) => {
     try {
         const user = await User.findByIdAndDelete(req.params.id)
 

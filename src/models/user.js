@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken')
 
 
 const userSchema = new mongoose.Schema({
+    
     username: {
         type: String,
         required: true,
@@ -89,6 +90,7 @@ const userSchema = new mongoose.Schema({
             required: true
         }
     }],
+    
     tokens:[{
         token:{
             type: String,
@@ -96,7 +98,7 @@ const userSchema = new mongoose.Schema({
         }
     }]
 
-})
+},{timestamps: true})
 
 userSchema.statics.findByCredentials = async (email, password) => {
     const user = await User.findOne({email: email})

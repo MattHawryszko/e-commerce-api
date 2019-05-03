@@ -84,6 +84,16 @@ const userSchema = new mongoose.Schema({
         default: false,
         required: true
     },
+    cartId: {
+        type: String,
+        default: false,
+        required: false
+    },
+    wishlistId: {
+        type: String,
+        default: false,
+        required: false
+    },
     ip:[{
         current:{
             type: String,

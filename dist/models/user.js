@@ -8,7 +8,18 @@ var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 
 var userSchema = new mongoose.Schema({
-    name: {
+
+    username: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    firstname: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    lastname: {
         type: String,
         required: true,
         trim: true
@@ -36,21 +47,63 @@ var userSchema = new mongoose.Schema({
             }
         }
     },
-
-    age: {
-        type: Number,
-        default: 0,
-        validate: function validate(value) {
-            if (value < 0) {
-                throw new Error('Age must be a postive number');
-            }
-        }
+    country: {
+        type: String,
+        required: true,
+        trim: true
     },
-    admin: {
-        type: Boolean,
+    street: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    appartment: {
+        type: String,
+        required: false,
+        trim: true
+    },
+    city: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    province: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    postalcode: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    phone: {
+        type: String,
+        required: false,
+        trim: true
+    },
+    level: {
+        type: Number,
         default: false,
         required: true
     },
+    cartId: {
+        type: String,
+        default: false,
+        required: false
+    },
+    wishlistId: {
+        type: String,
+        default: false,
+        required: false
+    },
+    ip: [{
+        current: {
+            type: String,
+            required: true
+        }
+    }],
+
     tokens: [{
         token: {
             type: String,
@@ -58,7 +111,7 @@ var userSchema = new mongoose.Schema({
         }
     }]
 
-});
+}, { timestamps: true });
 
 userSchema.statics.findByCredentials = function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(email, password) {
@@ -132,31 +185,25 @@ userSchema.methods.generateJWT = _asyncToGenerator( /*#__PURE__*/regeneratorRunt
         }
     }, _callee2, this);
 }));
-userSchema.pre('save', function () {
-    var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(next) {
-        var user;
+userSchema.methods.setIp = function () {
+    var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(req) {
+        var user, ip;
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
             while (1) {
                 switch (_context3.prev = _context3.next) {
                     case 0:
                         user = this;
+                        ip = req.header('x-forwarded-for') || req.connection.remoteAddress;
 
-                        if (!user.isModified('password')) {
-                            _context3.next = 5;
-                            break;
-                        }
-
-                        _context3.next = 4;
-                        return bcrypt.hash(user.password, 8);
-
-                    case 4:
-                        user.password = _context3.sent;
-
-                    case 5:
-
-                        next();
+                        ip = ip.split(':').slice(-1);
+                        user.ip = user.ip.concat({ current: ip });
+                        _context3.next = 6;
+                        return user.save();
 
                     case 6:
+                        return _context3.abrupt('return', user);
+
+                    case 7:
                     case 'end':
                         return _context3.stop();
                 }
@@ -166,6 +213,42 @@ userSchema.pre('save', function () {
 
     return function (_x3) {
         return _ref3.apply(this, arguments);
+    };
+}();
+userSchema.pre('save', function () {
+    var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(next) {
+        var user;
+        return regeneratorRuntime.wrap(function _callee4$(_context4) {
+            while (1) {
+                switch (_context4.prev = _context4.next) {
+                    case 0:
+                        user = this;
+
+                        if (!user.isModified('password')) {
+                            _context4.next = 5;
+                            break;
+                        }
+
+                        _context4.next = 4;
+                        return bcrypt.hash(user.password, 8);
+
+                    case 4:
+                        user.password = _context4.sent;
+
+                    case 5:
+
+                        next();
+
+                    case 6:
+                    case 'end':
+                        return _context4.stop();
+                }
+            }
+        }, _callee4, this);
+    }));
+
+    return function (_x4) {
+        return _ref4.apply(this, arguments);
     };
 }());
 

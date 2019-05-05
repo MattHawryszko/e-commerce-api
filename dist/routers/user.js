@@ -7,7 +7,7 @@ var User = require('../models/user');
 var Auth = require('../middleware/auth');
 var router = new express.Router();
 
-router.post('/api/users', function () {
+router.post('/users', function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(req, res) {
         var user, token;
         return regeneratorRuntime.wrap(function _callee$(_context) {
@@ -22,26 +22,31 @@ router.post('/api/users', function () {
                     case 4:
                         token = _context.sent;
                         _context.next = 7;
-                        return user.save();
+                        return user.setIp(req);
 
                     case 7:
+                        _context.next = 9;
+                        return user.save();
+
+                    case 9:
                         res.status(201).send({ user: user, token: token });
-                        _context.next = 14;
+
+                        _context.next = 16;
                         break;
 
-                    case 10:
-                        _context.prev = 10;
+                    case 12:
+                        _context.prev = 12;
                         _context.t0 = _context['catch'](1);
 
                         console.log(_context.t0);
                         res.status(400).send(_context.t0);
 
-                    case 14:
+                    case 16:
                     case 'end':
                         return _context.stop();
                 }
             }
-        }, _callee, undefined, [[1, 10]]);
+        }, _callee, undefined, [[1, 12]]);
     }));
 
     return function (_x, _x2) {
@@ -49,7 +54,7 @@ router.post('/api/users', function () {
     };
 }());
 
-router.post('/api/users/login', function () {
+router.post('/users/login', function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(req, res) {
         var user, token;
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
@@ -91,7 +96,7 @@ router.post('/api/users/login', function () {
         return _ref2.apply(this, arguments);
     };
 }());
-router.post('/api/users/logout', Auth, function () {
+router.post('/users/logout', Auth, function () {
     var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(req, res) {
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
             while (1) {
@@ -128,7 +133,7 @@ router.post('/api/users/logout', Auth, function () {
         return _ref3.apply(this, arguments);
     };
 }());
-router.post('/api/users/logoutAll', Auth, function () {
+router.post('/users/logoutAll', Auth, function () {
     var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(req, res) {
         return regeneratorRuntime.wrap(function _callee4$(_context4) {
             while (1) {
@@ -164,7 +169,7 @@ router.post('/api/users/logoutAll', Auth, function () {
     };
 }());
 
-router.get('/api/users', Auth, function () {
+router.get('/users', Auth, function () {
     var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(req, res) {
         var users;
         return regeneratorRuntime.wrap(function _callee5$(_context5) {
@@ -200,7 +205,7 @@ router.get('/api/users', Auth, function () {
         return _ref5.apply(this, arguments);
     };
 }());
-router.get('/api/users/me', Auth, function () {
+router.get('/users/me', Auth, function () {
     var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(req, res) {
         return regeneratorRuntime.wrap(function _callee6$(_context6) {
             while (1) {
@@ -225,7 +230,7 @@ router.get('/api/users/me', Auth, function () {
     };
 }());
 
-router.get('/api/users/:id', Auth, function () {
+router.get('/users/:id', Auth, function () {
     var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(req, res) {
         var _id, user;
 
@@ -273,7 +278,7 @@ router.get('/api/users/:id', Auth, function () {
     };
 }());
 
-router.patch('/api/users/:id', Auth, function () {
+router.patch('/users/:id', Auth, function () {
     var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(req, res) {
         var updates, allowedUpdates, isValidOperation, user;
         return regeneratorRuntime.wrap(function _callee8$(_context8) {
@@ -340,7 +345,7 @@ router.patch('/api/users/:id', Auth, function () {
     };
 }());
 
-router.delete('/api/users/:id', Auth, function () {
+router.delete('/users/:id', Auth, function () {
     var _ref9 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9(req, res) {
         var user;
         return regeneratorRuntime.wrap(function _callee9$(_context9) {

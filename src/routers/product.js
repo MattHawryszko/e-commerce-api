@@ -33,5 +33,13 @@ router.get('/product/:id', async (req, res) => {
       res.status(500).send()
   }
 })
+router.get('/products', async (req, res) => {
+    try {
+        const products = await Product.find({})
+        res.send(products)
+    } catch (e) {
+        res.status(500).send()
+    }
+  })
 
 module.exports = router
